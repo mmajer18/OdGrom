@@ -44,7 +44,7 @@ namespace OdGrom
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            
+            //test
             int liczba_iglic;
             int punkty_x, punkty_y;
             punkty_x = Convert.ToInt16(tb_dlugosc.Text);
