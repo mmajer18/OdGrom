@@ -24,6 +24,7 @@ namespace OdGrom
     {
         private List<Triangulator.Geometry.Point> Vertices;
         private double[] kontury;
+        private int licznik =0 ;
 
 
         public MainWindow()
@@ -51,49 +52,60 @@ namespace OdGrom
             punkty_y = Convert.ToInt16(tb_szerokosc.Text);
             liczba_iglic = listBox.Items.Count;
             kontury = new double[listBox1.Items.Count];
-            Iglica[] iglice = new Iglica[liczba_iglic];
+            Iglica[] iglice = new Iglica[3];
             DxfDocument dxf = new DxfDocument();
             Triangulator.Geometry.Point pNew;
-            for (int i = 0; i < listBox.Items.Count; i++)
-            {
-                iglice[i] = new Iglica();
-                            
-                    string linia = listBox.Items.GetItemAt(i).ToString();
-                    int index0 = linia.IndexOf("x=");
-                    int index1 = linia.IndexOf(";");
-                    iglice[i].X = Convert.ToDouble(linia.Substring(index0 + 2, index1 - index0 - 2));
-                    linia = linia.Substring(index1 + 1, linia.Length - index1 - 1);
-                    index0 = linia.IndexOf("y=");
-                    index1 = linia.IndexOf(";");
-                    iglice[i].Y = Convert.ToDouble(linia.Substring(index0 + 2, index1 - index0 - 2));
-                    linia = linia.Substring(index1 + 1, linia.Length - index1 - 1);
-                    index0 = linia.IndexOf("h=");
-                    index1 = linia.IndexOf(";");
-                    iglice[i].wysokosc = Convert.ToDouble(linia.Substring(index0 + 2, index1 - index0 - 2));
-            
-                pNew = new Triangulator.Geometry.Point(iglice[i].X, iglice[i].Y);
-                if (!Vertices.Exists(delegate (Triangulator.Geometry.Point p) { return pNew.Equals2D(p); }))
-                    Vertices.Add(pNew);
+            /* for (int i = 0; i < listBox.Items.Count; i++)
+             {
+                 iglice[i] = new Iglica();
 
-            }
-            /*
-            for (int i=0; i<punkty_x;i++)
+                     string linia = listBox.Items.GetItemAt(i).ToString();
+                     int index0 = linia.IndexOf("x=");
+                     int index1 = linia.IndexOf(";");
+                     iglice[i].X = Convert.ToDouble(linia.Substring(index0 + 2, index1 - index0 - 2));
+                     linia = linia.Substring(index1 + 1, linia.Length - index1 - 1);
+                     index0 = linia.IndexOf("y=");
+                     index1 = linia.IndexOf(";");
+                     iglice[i].Y = Convert.ToDouble(linia.Substring(index0 + 2, index1 - index0 - 2));
+                     linia = linia.Substring(index1 + 1, linia.Length - index1 - 1);
+                     index0 = linia.IndexOf("h=");
+                     index1 = linia.IndexOf(";");
+                     iglice[i].wysokosc = Convert.ToDouble(linia.Substring(index0 + 2, index1 - index0 - 2));
+
+                 pNew = new Triangulator.Geometry.Point(iglice[i].X, iglice[i].Y);
+                 if (!Vertices.Exists(delegate (Triangulator.Geometry.Point p) { return pNew.Equals2D(p); }))
+                     Vertices.Add(pNew);
+
+             }
+             */
+            iglice[0] = new Iglica(3, 3, 3);
+            pNew = new Triangulator.Geometry.Point(iglice[0].X, iglice[0].Y);
+            if (!Vertices.Exists(delegate (Triangulator.Geometry.Point p) { return pNew.Equals2D(p); }))
+                Vertices.Add(pNew);
+            iglice[1] = new Iglica(3, 15, 3);
+            pNew = new Triangulator.Geometry.Point(iglice[1].X, iglice[1].Y);
+            if (!Vertices.Exists(delegate (Triangulator.Geometry.Point p) { return pNew.Equals2D(p); }))
+                Vertices.Add(pNew);
+            iglice[2] = new Iglica(18, 5, 3);
+            pNew = new Triangulator.Geometry.Point(iglice[2].X, iglice[2].Y);
+            if (!Vertices.Exists(delegate (Triangulator.Geometry.Point p) { return pNew.Equals2D(p); }))
+                Vertices.Add(pNew);
+            for (int i=0; i<punkty_y+1;i=i+20)
             {
                 pNew = new Triangulator.Geometry.Point(0, i);
                 Vertices.Add(pNew);
-                pNew = new Triangulator.Geometry.Point(Convert.ToInt16(tb_szerokosc.Text), i);
+                pNew = new Triangulator.Geometry.Point(Convert.ToInt16(tb_dlugosc.Text), i);
                 Vertices.Add(pNew);
 
             }
-            for (int i = 0; i < punkty_y; i++)
+            for (int i = 0; i < punkty_x+1; i=i+20)
             {
                 pNew = new Triangulator.Geometry.Point(i, 0);
                 Vertices.Add(pNew);
-                pNew = new Triangulator.Geometry.Point(i,Convert.ToInt16(tb_dlugosc.Text));
+                pNew = new Triangulator.Geometry.Point(i,Convert.ToInt16(tb_szerokosc.Text));
                 Vertices.Add(pNew);
 
             }
-            */
             for (int i = 0; i < listBox1.Items.Count; i++)
             {
                 kontury[i] = new double();
@@ -171,21 +183,65 @@ namespace OdGrom
             return siatka;
 
         }
-        public void wylicz_punkty_2(DxfDocument dxf, Vector3 pk_1, Vector3 pk_2,Vector3 pk_3, Vector3 center, ref double[,] siatka, ref double[] x, ref double[] y )
+        public void wylicz_punkty_2(DxfDocument dxf, Vector3 pk1, Vector3 pk2,Vector3 pk3, Vector3 center, ref double[,] siatka, ref double[] x, ref double[] y )
         {
             
-            double dok_pkt = 0.01;
+            double dok_pkt = 0.1;
             double promien_tocz_kuli = 60;            
-            double radius = Math.Sqrt(Math.Pow(pk_1.X - center.X, 2) + Math.Pow(pk_1.Y - center.Y, 2) + Math.Pow(pk_1.Z - center.Z, 2));
-            double z_kuli = center.Z+Math.Sqrt(Math.Pow(promien_tocz_kuli, 2)- Math.Pow(radius, 2));
-            double min_x, min_y, max_x, max_y;
-            int k,l;
-            min_x = Math.Min(Math.Min(pk_1.X, pk_2.X),pk_3.X);
-            min_y = Math.Min(Math.Min(pk_1.Y, pk_2.Y), pk_3.Y);
-            max_x = Math.Max(Math.Max(pk_1.X, pk_2.X), pk_3.X);
-            max_y = Math.Max(Math.Max(pk_1.Y, pk_2.Y), pk_3.Y);
-            k = Convert.ToInt16(min_x * (1 / dok_pkt));
-            
+            bool war1 = false, war2 = false, war3 = false;
+            double[] r1, r2, r3 = new double[3];
+            r1 = str_ochronna.Prosta(pk1, pk2);
+            r2 = str_ochronna.Prosta(pk1, pk3);
+            r3 = str_ochronna.Prosta(pk2, pk3);
+            double y_1=0;
+            double x_1=0;
+            Vector3 pk5;
+            pk5 = str_ochronna.Srodek_kuli(pk1, pk2, pk3, GetCen(pk1, pk2, pk3), promien_tocz_kuli);
+            for (int k=0; x_1< Math.Max(pk1.X, Math.Max(pk2.X, pk3.X));k++)
+            {
+                licznik = licznik + 1;
+                x_1 = k * dok_pkt;
+                x[k] = x_1;
+                for (int l = 0;  y_1 < Math.Max(pk1.Y, Math.Max(pk2.Y, pk3.Y));l++)
+                {
+                    y_1 = l * dok_pkt;
+                    
+                    if (Vector3.Normalize(pk3 - Vector3.MidPoint(pk1, pk2)).Y >= 0)
+                    {
+                        war1 = (y_1*r1[2] - r1[0] * x_1 > r1[1]);
+                    }
+                    else
+                    {
+                        war1 = (y_1 * r1[2] - r1[0] * x_1 < r1[1]);
+                    }
+                    if (Vector3.Normalize(pk2 - Vector3.MidPoint(pk1, pk3)).Y >= 0)
+                    {
+                        war2 = (y_1 * r2[2] - r2[0] * x_1 > r2[1]);
+                    }
+                    else
+                    {
+                        war2 = (y_1 * r2[2] - r2[0] * x_1 < r2[1]);
+                    }
+                    if (Vector3.Normalize(pk1 - Vector3.MidPoint(pk2, pk3)).Y >= 0)
+                    {
+                        war3 = (y_1 * r3[2] - r3[0] * x_1 > r3[1]);
+                    }
+                    else
+                    {
+                        war3 = (y_1 * r3[2] - r3[0] * x_1 < r3[1]);
+                    }
+                    if (true)
+                    {
+                        //siatka[k,l] = pk5.Z - Math.Sqrt(Math.Pow(promien_tocz_kuli,2) - Math.Pow(x_1,2)+2*x_1*pk5.X-Math.Pow(pk5.X,2)-Math.Pow(y_1,2)+2*y_1*pk5.Y-Math.Pow(pk5.Y,2));
+                        netDxf.Entities.Point punkt = new netDxf.Entities.Point(x_1, y_1, pk5.Z - Math.Sqrt(Math.Pow(promien_tocz_kuli, 2) - Math.Pow(x_1, 2) + 2 * x_1 * pk5.X - Math.Pow(pk5.X, 2) - Math.Pow(y_1, 2) + 2 * y_1 * pk5.Y - Math.Pow(pk5.Y, 2)));
+                        dxf.AddEntity(punkt);
+                    }
+                    y[l] = y_1;
+                }
+
+
+            }
+            /*
             for (double i = min_x; i<max_x; i += 0.01)
             {
                 x[k] = i;
@@ -198,9 +254,9 @@ namespace OdGrom
                     l = l + 1;
                 }
             }      
-                           
-            
-               
+               */
+
+
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
@@ -455,8 +511,8 @@ namespace OdGrom
         public void rysuj_troj(DxfDocument dxf, Iglica[] iglice)
         {
             int punkty_x, punkty_y;
-            punkty_x = Convert.ToInt16(tb_dlugosc.Text) * Convert.ToInt16(1 / 0.01);
-            punkty_y = Convert.ToInt16(tb_szerokosc.Text) * Convert.ToInt16(1 /0.01);
+            punkty_x = Convert.ToInt16(tb_dlugosc.Text) * Convert.ToInt16(1 / 0.1);
+            punkty_y = Convert.ToInt16(tb_szerokosc.Text) * Convert.ToInt16(1 /0.1);
             double[] x = new double[punkty_x+1];
             double[] y = new double[punkty_y+1];
             double[,] siatka = new double[punkty_x+1, punkty_y+1];
@@ -478,7 +534,7 @@ namespace OdGrom
                     pk_1 = new Vector3((float)Vertices[t.p1].X, (float)Vertices[t.p1].Y, 0);
                     pk_2 = new Vector3((float)Vertices[t.p2].X, (float)Vertices[t.p2].Y, 0);
                     pk_3 = new Vector3((float)Vertices[t.p3].X, (float)Vertices[t.p3].Y, 0);
-                    for (int i = 0; i < listBox.Items.Count; i++)
+                    for (int i = 0; i < 3; i++)
                     {
                         if ((Math.Abs(Vertices[t.p1].X - iglice[i].X)<epsilon)  & (Math.Abs(Vertices[t.p1].Y - iglice[i].Y)<epsilon))
                         {
@@ -493,23 +549,18 @@ namespace OdGrom
                             pk_3 = new Vector3((float)Vertices[t.p3].X, (float)Vertices[t.p3].Y, iglice[i].wysokosc);
                         }
                         
-                    }
-                    dPoint pk_4 = new dPoint();
-                    dPoint pk_5 = new dPoint();
-                    pk_5.x = pk_1.X;
-                    pk_5.y = pk_1.Y;
-                    pk_4 = pk_4.CircleCenter(pk_1, pk_2, pk_3);
+                    }                
                     Vector3 pk_6 = new Vector3();                    
                     pk_6 = GetCen(pk_1, pk_2, pk_3);
-                    Vector2 pk_7 = new Vector2(pk_6.X, pk_6.Y);
                     netDxf.Entities.Line ln_1 = new netDxf.Entities.Line(pk_1, pk_2);
-                    netDxf.Entities.Circle circle_1 = new netDxf.Entities.Circle(pk_6,Math.Sqrt(Math.Pow(pk_1.X-pk_6.X,2)+ Math.Pow(pk_1.Y - pk_6.Y, 2)+ Math.Pow(pk_1.Z - pk_6.Z, 2)));                    
-                   // dxf.AddEntity(circle_1);
-                    //dxf.AddEntity(ln_1);                   
+                    netDxf.Entities.Circle circle_1 = new netDxf.Entities.Circle(pk_6,Math.Sqrt(Math.Pow(pk_1.X-pk_6.X,2)+ Math.Pow(pk_1.Y - pk_6.Y, 2)+ Math.Pow(pk_1.Z - pk_6.Z, 2)));
+                    netDxf.Entities.Circle circle_2 = new netDxf.Entities.Circle(pk_6, 1);
+                    dxf.AddEntity(circle_2);
+                    dxf.AddEntity(ln_1);                   
                     ln_1 = new netDxf.Entities.Line(pk_2, pk_3);
-                    //dxf.AddEntity(ln_1);
+                    dxf.AddEntity(ln_1);
                     ln_1 = new netDxf.Entities.Line(pk_1, pk_3);
-                    //dxf.AddEntity(ln_1);
+                    dxf.AddEntity(ln_1);
                     wylicz_punkty_2(dxf, pk_1, pk_2, pk_3, pk_6, ref siatka, ref x, ref y);                
 
                 }
