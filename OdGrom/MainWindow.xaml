@@ -1,0 +1,36 @@
+﻿<Window x:Class="OdGrom.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OdGrom"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="551.151" Width="525">
+    <Grid>
+        <Button x:Name="button" Content="Rysuj" HorizontalAlignment="Left" Margin="10,281,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <TextBox x:Name="tb_X" HorizontalAlignment="Left" Height="23" Margin="330,22,0,0" TextWrapping="Wrap" Text="X" VerticalAlignment="Top" Width="90"/>
+        <TextBox x:Name="tb_Y" HorizontalAlignment="Left" Height="23" Margin="330,50,0,0" TextWrapping="Wrap" Text="Y" VerticalAlignment="Top" Width="90"/>
+        <TextBox x:Name="tb_H" HorizontalAlignment="Left" Height="23" Margin="330,78,0,0" TextWrapping="Wrap" Text="H" VerticalAlignment="Top" Width="90"/>
+        <Button x:Name="bt_dodaj_iglice" Content="Dodaj iglicę" HorizontalAlignment="Left" Margin="432,25,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
+        <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="223" Margin="23,30,0,0" VerticalAlignment="Top" Width="254"/>
+        <Button x:Name="bt_usun_iglice" Content="Usuń iglicę" HorizontalAlignment="Left" Margin="432,77,0,0" VerticalAlignment="Top" Width="75" Click="bt_usun_iglice_Click"/>
+        <GroupBox x:Name="groupBox" Header="Wymiar dachu" HorizontalAlignment="Left" Margin="322,112,0,0" VerticalAlignment="Top" Height="100" Width="175">
+            <Grid HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="150">
+                <Label x:Name="label_1" Content="Szerokość" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="label_2" Content="Dlugość" HorizontalAlignment="Left" Margin="5,30,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="label_3" Content="m" HorizontalAlignment="Left" Margin="120,5,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="tb_szerokosc" HorizontalAlignment="Left" Height="23" Margin="70,7,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="50" TextAlignment="Center"/>
+                <Label x:Name="label_4" Content="m" HorizontalAlignment="Left" Margin="120,30,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="tb_dlugosc" HorizontalAlignment="Left" Height="23" Margin="70,32,0,0" TextWrapping="Wrap" Text="40" VerticalAlignment="Top" Width="50" TextAlignment="Center"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="groupBox_Copy" Header="Poziomy graniczne" HorizontalAlignment="Left" Margin="322,229,0,0" VerticalAlignment="Top" Height="123" Width="175">
+            <Grid HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="150">
+                <ListBox x:Name="listBox1" HorizontalAlignment="Left" Height="80" Margin="10,10,0,-10" VerticalAlignment="Top" Width="130"/>
+            </Grid>
+        </GroupBox>
+        <ProgressBar x:Name="Progresbar1" HorizontalAlignment="Left" Height="17" Margin="10,353,0,0" VerticalAlignment="Top" Width="497"/>
+        <Button x:Name="button1" Content="Button" HorizontalAlignment="Left" Margin="132,281,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click_1"/>
+
+    </Grid>
+</Window>

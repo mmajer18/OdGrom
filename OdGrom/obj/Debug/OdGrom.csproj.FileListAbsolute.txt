@@ -1,0 +1,17 @@
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\bin\Debug\OdGrom.exe.config
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\OdGrom.csprojResolveAssemblyReference.cache
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\MainWindow.g.cs
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\App.g.cs
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\OdGrom_MarkupCompile.cache
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\OdGrom_MarkupCompile.lref
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\bin\Debug\OdGrom.exe
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\bin\Debug\OdGrom.pdb
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\MainWindow.baml
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\OdGrom.g.resources
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\OdGrom.Properties.Resources.resources
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\OdGrom.csproj.GenerateResource.Cache
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\OdGrom.exe
+c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\OdGrom.pdb
+C:\Users\Marek\Documents\Visual Studio 2015\Projects\OdGrom\OdGrom\bin\Debug\netDxf.dll
+C:\Users\Marek\Documents\Visual Studio 2015\Projects\OdGrom\OdGrom\bin\Debug\netDxf.pdb
+C:\Users\Marek\Documents\Visual Studio 2015\Projects\OdGrom\OdGrom\bin\Debug\netDxf.xml
