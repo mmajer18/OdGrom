@@ -465,7 +465,7 @@ namespace OdGrom
                 //Do triangulation
                 List<Triangulator.Geometry.Triangle> tris = Triangulator.Delauney.Triangulate(Vertices);
                 // Draw the created triangles
-                
+                punkty_x = tris.Count();
                 foreach (Triangulator.Geometry.Triangle t in tris)
                 {
                     Vector3 pk_1= new Vector3();

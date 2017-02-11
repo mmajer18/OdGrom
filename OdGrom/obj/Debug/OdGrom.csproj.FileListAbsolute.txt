@@ -15,3 +15,19 @@ c:\users\marek\documents\visual studio 2015\Projects\OdGrom\OdGrom\obj\Debug\OdG
 C:\Users\Marek\Documents\Visual Studio 2015\Projects\OdGrom\OdGrom\bin\Debug\netDxf.dll
 C:\Users\Marek\Documents\Visual Studio 2015\Projects\OdGrom\OdGrom\bin\Debug\netDxf.pdb
 C:\Users\Marek\Documents\Visual Studio 2015\Projects\OdGrom\OdGrom\bin\Debug\netDxf.xml
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\bin\Debug\OdGrom.exe.config
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\OdGrom.exe
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\OdGrom.pdb
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\bin\Debug\OdGrom.exe
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\bin\Debug\OdGrom.pdb
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\bin\Debug\netDxf.pdb
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\bin\Debug\netDxf.xml
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\OdGrom.csprojResolveAssemblyReference.cache
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\MainWindow.g.cs
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\App.g.cs
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\OdGrom_MarkupCompile.cache
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\OdGrom_MarkupCompile.lref
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\MainWindow.baml
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\OdGrom.g.resources
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\OdGrom.Properties.Resources.resources
+C:\Users\marek\Documents\GitHub\OdGrom\OdGrom\obj\Debug\OdGrom.csproj.GenerateResource.Cache
