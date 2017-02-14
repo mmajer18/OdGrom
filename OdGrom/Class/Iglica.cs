@@ -13,6 +13,12 @@ namespace OdGrom
         public double wysokosc;
         public double X;
         public double Y;
+        public Iglica(double x, double y, double wys)
+        {
+            wysokosc = wys;
+            X = x;
+            Y = y;
+        }
     }
     public class dPoint
     { 
