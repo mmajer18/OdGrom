@@ -13,6 +13,12 @@ namespace OdGrom
         public double wysokosc;
         public double X;
         public double Y;
+        public Iglica(double x, double y, double wys)
+        {
+            X = x;
+            Y = y;
+            wysokosc = wys;
+        }
     }
     public class dPoint
     { 
@@ -31,6 +37,7 @@ namespace OdGrom
         {
             return Math.Sqrt(Math.Pow(pkt_2.x - pkt_1.x,2)+Math.Pow(pkt_2.y-pkt_1.y,2));
         }
+
     }
 
 }

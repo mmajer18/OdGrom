@@ -68,6 +68,8 @@
     </Compile>
     <Compile Include="Class\Funkcje.cs" />
     <Compile Include="Class\Iglica.cs" />
+    <Compile Include="Class\Klasa_ochrony.cs" />
+    <Compile Include="Class\str_ochronna.cs" />
     <Compile Include="Class\warswice.cs" />
     <Compile Include="Delauney.cs" />
     <Compile Include="Geometry\Edge.cs" />
