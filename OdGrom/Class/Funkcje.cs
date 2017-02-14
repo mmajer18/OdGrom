@@ -34,6 +34,30 @@ namespace OdGrom
 
             return oddNodes;
         }
+        public static bool IsInPolygon(Vector3[] poly, Vector3 point)
+        {
+            var coef = poly.Skip(1).Select((p, i) =>
+                                            (point.Y - poly[i].Y) * (p.X - poly[i].X)
+                                          - (point.X - poly[i].X) * (p.Y - poly[i].Y))
+                                    .ToList();
+
+            if (coef.Any(p => p == 0))
+                return true;
+
+            for (int i = 1; i < coef.Count(); i++)
+            {
+                if (coef[i] * coef[i - 1] < 0)
+                    return false;
+            }
+            return true;
+        }
+        public static bool polyCheck(Vector3 v, Vector3[] p)
+        {
+            int j = p.Length - 1;
+            bool c = false;
+            for (int i = 0; i < p.Length; j = i++) c ^= p[i].Y > v.Y ^ p[j].Y > v.Y && v.X < (p[j].X - p[i].X) * (v.Y - p[i].Y) / (p[j].Y - p[i].Y) + p[i].X;
+            return c;
+        }
 
     }
 }

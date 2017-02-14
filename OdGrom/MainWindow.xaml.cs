@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
 
 namespace OdGrom
 {
@@ -127,96 +128,9 @@ namespace OdGrom
 
         }
 
-        public double[,] wylicz_punkty(DxfDocument dxf, Iglica[] iglice, double promien, double dok_pkt, double dok_wys, double[] kontury)
-        {
-            int punkty_x, punkty_y;
-
-            double dist;
-            double[] dist_rob = new double[iglice.Length];
-            punkty_x = Convert.ToInt16(tb_dlugosc.Text) * Convert.ToInt16(1 / dok_pkt);
-            punkty_y = Convert.ToInt16(tb_szerokosc.Text) * Convert.ToInt16(1 / dok_pkt);
-            double[] x = new double[punkty_x];
-            double[] y = new double[punkty_y];
-            double[,] siatka = new double[punkty_x, punkty_y];
-            Progresbar1.Maximum = punkty_x * punkty_y;
-
-            for (int i = 0; i < Convert.ToInt16(tb_dlugosc.Text) * Convert.ToInt16(1 / dok_pkt); i++)
-            {
-                x[i] = i * dok_pkt;
-                for (int j = 0; j < Convert.ToInt16(tb_szerokosc.Text) * Convert.ToInt16(1 / (dok_pkt)); j++)
-                {
-                    y[j] = j * dok_pkt;
-                    for (int k = 0; k < (5 / dok_wys); k++)
-                    {
-                        siatka[i, j] = k * dok_wys;
-                        Progresbar1.Value++;
-                        for (int m = 0; m < iglice.Length; m++)
-                        {
-                            dist_rob[m] = Math.Sqrt(Math.Pow(i * dok_pkt - iglice[m].X, 2)
-                                                    + Math.Pow(j * dok_pkt - iglice[m].Y, 2)
-                                                    + Math.Pow(siatka[i, j] + promien - iglice[m].wysokosc, 2));
-                        }
-                        dist = dist_rob[0];
-                        for (int n = 0; n < dist_rob.Length; n++)
-                        {
-                            if (dist_rob[n] < dist)
-                            {
-                                dist = dist_rob[n];
-                            }
-                        }
-                        if (dist > promien)
-                        {
-                            break;
-                        }
-                    }
-
-                }
-            }
-            Contour(dxf, siatka, x, y, kontury);
-            rysuj_troj(dxf, iglice);
-            return siatka;
-
-        }
-        public void wylicz_punkty_2(DxfDocument dxf, Vector3 pk_1, Vector3 pk_2,Vector3 pk_3, Vector3 center, ref double[,] siatka, ref double[] x, ref double[] y )
-        {
-            
-            double dok_pkt = 0.01;
-            double promien_tocz_kuli = 60;            
-            double radius = Math.Sqrt(Math.Pow(pk_1.X - center.X, 2) + Math.Pow(pk_1.Y - center.Y, 2) + Math.Pow(pk_1.Z - center.Z, 2));
-            double z_kuli = center.Z+Math.Sqrt(Math.Pow(promien_tocz_kuli, 2)- Math.Pow(radius, 2));
-            double min_x, min_y, max_x, max_y;
-            int k,l;
-            min_x = Math.Min(Math.Min(pk_1.X, pk_2.X),pk_3.X);
-            min_y = Math.Min(Math.Min(pk_1.Y, pk_2.Y), pk_3.Y);
-            max_x = Math.Max(Math.Max(pk_1.X, pk_2.X), pk_3.X);
-            max_y = Math.Max(Math.Max(pk_1.Y, pk_2.Y), pk_3.Y);
-            k = Convert.ToInt16(min_x * (1 / dok_pkt));
-            /*
-            for (double i = min_x; i<max_x; i += 0.01)
-            {
-                x[k] = i;
-                k = k + 1;
-                l = Convert.ToInt16(min_y * (1 / dok_pkt));
-                for (double j = min_y; j < max_y; j += 0.01)
-                {
-                    y[l] = j;
-                    siatka[k, l] = z_kuli - Math.Sqrt(Math.Pow(promien_tocz_kuli,2)-Math.Pow(i,2)+2*i*center.X-Math.Pow(center.X,2)-Math.Pow(j,2)+2*j*center.Y-Math.Pow(center.Y,2));
-                    l = l + 1;
-                }
-            }      
-                    */       
-            
-               
-        }
-
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             listBox.Items.Add("Iglica " + listBox.Items.Count + " x=" + tb_X.Text + "; y=" + tb_Y.Text + "; h=" + tb_H.Text + ";");
-        }
-
-        private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
         }
 
         private void bt_usun_iglice_Click(object sender, RoutedEventArgs e)
@@ -430,6 +344,8 @@ namespace OdGrom
                                         }
 
                                         netDxf.Tables.Layer warstwa = new netDxf.Tables.Layer("h-" + nazwa_warsty + "m");
+                                        short color = Convert.ToInt16(k);
+                                        warstwa.Color = new AciColor(k *20, k*5, 0);
                                         dxf.Layers.Add(warstwa);
                                         ln_1.Layer = warstwa;
                                         dxf.AddEntity(ln_1);
@@ -442,22 +358,7 @@ namespace OdGrom
             }
         }
 
-        private void button1_Click_1(object sender, RoutedEventArgs e)
-        {
-            if (Vertices.Count > 2)
-            {
-                //Do triangulation
-                List<Triangulator.Geometry.Triangle> tris = Triangulator.Delauney.Triangulate(Vertices);
-                // Draw the created triangles
-                foreach (Triangulator.Geometry.Triangle t in tris)
-                {
-                    // g.DrawLine(myPen, (float)Vertices[t.p1].X, (float)Vertices[t.p1].Y, (float)Vertices[t.p2].X, (float)Vertices[t.p2].Y);
-                    //  g.DrawLine(myPen, (float)Vertices[t.p2].X, (float)Vertices[t.p2].Y, (float)Vertices[t.p3].X, (float)Vertices[t.p3].Y);
-                    // g.DrawLine(myPen, (float)Vertices[t.p1].X, (float)Vertices[t.p1].Y, (float)Vertices[t.p3].X, (float)Vertices[t.p3].Y);
-                    //dxf.AddEntity(ln_1)
-                }
-            }
-        }
+       
         public void rysuj_troj(DxfDocument dxf, Iglica[] iglice)
         {
             int punkty_x, punkty_y, t_num=0;
@@ -465,8 +366,7 @@ namespace OdGrom
             punkty_y = Convert.ToInt16(tb_szerokosc.Text) * Convert.ToInt16(1 /0.01);
             double[] x = new double[punkty_x+1];
             double[] y = new double[punkty_y+1];
-            double promien_tocz_kuli = 60;
-            netDxf.Entities.Point pt_9;
+            double promien_tocz_kuli = 30;
 
             double[,] siatka = new double[punkty_x+1, punkty_y+1];
             if (Vertices.Count > 2)
@@ -476,11 +376,11 @@ namespace OdGrom
                 // Draw the created triangles
 
                 Vector3[,] punkty_troj = new Vector3[tris.Count, 3];
-                Vector3[,] wsp_kuli = new Vector3[tris.Count, 1];
+                Vector3[] wsp_kuli = new Vector3[tris.Count];
                 foreach (Triangulator.Geometry.Triangle t in tris)
                 {
-              
-                    Vector3 pk_1= new Vector3();
+
+                    Vector3 pk_1 = new Vector3();
                     Vector3 pk_2 = new Vector3();
                     Vector3 pk_3 = new Vector3();
                     double epsilon = 0.01;
@@ -493,9 +393,9 @@ namespace OdGrom
                     punkty_troj[t_num, 0] = pk_1;
                     punkty_troj[t_num, 1] = pk_2;
                     punkty_troj[t_num, 2] = pk_3;
-                    for (int i = 0; i < listBox.Items.Count; i++)
+                    for (int i = 0; i < iglice.Count(); i++)
                     {
-                        if ((Math.Abs(Vertices[t.p1].X - iglice[i].X)<epsilon)  & (Math.Abs(Vertices[t.p1].Y - iglice[i].Y)<epsilon))
+                        if ((Math.Abs(Vertices[t.p1].X - iglice[i].X) < epsilon) & (Math.Abs(Vertices[t.p1].Y - iglice[i].Y) < epsilon))
                         {
                             pk_1 = new Vector3((float)Vertices[t.p1].X, (float)Vertices[t.p1].Y, iglice[i].wysokosc);
                         }
@@ -507,20 +407,20 @@ namespace OdGrom
                         {
                             pk_3 = new Vector3((float)Vertices[t.p3].X, (float)Vertices[t.p3].Y, iglice[i].wysokosc);
                         }
-                        
+
                     }
                     dPoint pk_4 = new dPoint();
                     dPoint pk_5 = new dPoint();
                     pk_5.x = pk_1.X;
                     pk_5.y = pk_1.Y;
                     pk_4 = pk_4.CircleCenter(pk_1, pk_2, pk_3);
-                    Vector3 pk_6 = new Vector3();                    
+                    Vector3 pk_6 = new Vector3();
                     pk_6 = GetCen(pk_1, pk_2, pk_3); //srodek kuli
                     Vector2 pk_7 = new Vector2(pk_6.X, pk_6.Y);
-                    netDxf.Entities.Line ln_1 = new netDxf.Entities.Line(pk_1, pk_2);
-                    netDxf.Entities.Circle circle_1 = new netDxf.Entities.Circle(pk_6,Math.Sqrt(Math.Pow(pk_1.X-pk_6.X,2)+ Math.Pow(pk_1.Y - pk_6.Y, 2)+ Math.Pow(pk_1.Z - pk_6.Z, 2)));                    
-                   // dxf.AddEntity(circle_1);
-                    dxf.AddEntity(ln_1);                   
+                    netDxf.Entities.Line ln_1 = new netDxf.Entities.Line(pk_1, pk_2);                  
+                    netDxf.Entities.Circle circle_1 = new netDxf.Entities.Circle(pk_6, Math.Sqrt(Math.Pow(pk_1.X - pk_6.X, 2) + Math.Pow(pk_1.Y - pk_6.Y, 2) + Math.Pow(pk_1.Z - pk_6.Z, 2)));
+                    // dxf.AddEntity(circle_1);
+                    dxf.AddEntity(ln_1);
                     ln_1 = new netDxf.Entities.Line(pk_2, pk_3);
                     dxf.AddEntity(ln_1);
                     ln_1 = new netDxf.Entities.Line(pk_1, pk_3);
@@ -528,34 +428,40 @@ namespace OdGrom
                     //wylicz_punkty_2(dxf, pk_1, pk_2, pk_3, pk_6, ref siatka, ref x, ref y); 
                     double radius = Math.Sqrt(Math.Pow(pk_1.X - pk_6.X, 2) + Math.Pow(pk_1.Y - pk_6.Y, 2) + Math.Pow(pk_1.Z - pk_6.Z, 2));
                     double z_kuli = pk_6.Z + Math.Sqrt(Math.Pow(promien_tocz_kuli, 2) - Math.Pow(radius, 2));
-                    wsp_kuli[t_num, 0] = new Vector3(pk_6.X, pk_6.Y, z_kuli);    
+                    wsp_kuli[t_num] = new Vector3(pk_6.X, pk_6.Y, z_kuli);
                     t_num = t_num + 1;
+                  
                 }
-                for (int i =0; i<20/0.01; i++)
+                netDxf.Entities.Point punkt_cad = new netDxf.Entities.Point();
+                Vector3[] pk_rob = new Vector3[3];
+                Vector3 pk = new Vector3();
+                for (int i = 0; i < 20 / 0.01; i++)
                 {
-                    x[i] = i * 0.01;
-                    for (int j=0; j<20/0.01;j++)
-                    {
+                      x[i] = i * 0.01;
+                      for (int j = 0; j < 20 / 0.01; j++)
+                      {
 
-                        y[j] = j * 0.01;
-
+                          y[j] = j * 0.01;
+                          pk = new Vector3(i * 0.01, j * 0.01, 0);
                         for (int k=0; k<t_num; k++)
                         {
-                            Vector3[] pk_rob = new Vector3[3];
-                            Vector3 pk = new Vector3(i*0.01,j*0.01,0);
-                            pk_rob[0] = punkty_troj[k,0];
+                            
+                            pk_rob[0] = punkty_troj[k, 0];
                             pk_rob[1] = punkty_troj[k, 1];
                             pk_rob[2] = punkty_troj[k, 2];
-                            if (Funkcje.pointInPolygon(pk_rob,pk))
+                            if (Funkcje.polyCheck(pk, pk_rob))
                             {
-                                siatka[i, j] = wsp_kuli[k,0].Z - Math.Sqrt(Math.Pow(promien_tocz_kuli, 2) - Math.Pow(i, 2) + 2 * i * wsp_kuli[k,0].X - Math.Pow(wsp_kuli[k,0].X, 2) - Math.Pow(j, 2) + 2 * j * wsp_kuli[k,0].Y - Math.Pow(wsp_kuli[k,0].Y, 2));
-                                pt_9 = new netDxf.Entities.Point(x[i], y[j], siatka[i, j]);
-                                //dxf.AddEntity(pt_9);    
+                                siatka[i, j] = wsp_kuli[k].Z - Math.Sqrt(Math.Pow(promien_tocz_kuli, 2) - Math.Pow(i* 0.01, 2) + 2 * i*0.01 * wsp_kuli[k].X - Math.Pow(wsp_kuli[k].X, 2) - Math.Pow(j*0.01, 2) + 2 * j* 0.01 * wsp_kuli[k].Y - Math.Pow(wsp_kuli[k].Y, 2));
+                                break;
                             }
-                           
+
                         }
-                    }
-                }
+                          //punkt_cad = new netDxf.Entities.Point();
+                          //dxf.AddEntity(punkt_cad);
+
+                      }
+                  }
+              
                 Contour(dxf, siatka, x, y, kontury);
 
             }
