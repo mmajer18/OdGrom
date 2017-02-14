@@ -21,11 +21,11 @@ namespace OdGrom
         }
     }
     public class dPoint
-    { 
+    {
 
         public double x;
         public double y;
-        
+
         public dPoint CircleCenter(Vector3 p1, Vector3 p2, Vector3 p3)
         { // Funkcja licząca położenie środka okręgu
             dPoint point = new dPoint();
@@ -35,7 +35,7 @@ namespace OdGrom
         }
         public double Length(dPoint pkt_1, dPoint pkt_2)
         {
-            return Math.Sqrt(Math.Pow(pkt_2.x - pkt_1.x,2)+Math.Pow(pkt_2.y-pkt_1.y,2));
+            return Math.Sqrt(Math.Pow(pkt_2.x - pkt_1.x, 2) + Math.Pow(pkt_2.y - pkt_1.y, 2));
         }
     }
 

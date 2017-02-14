@@ -52,14 +52,16 @@ namespace OdGrom
             punkty_y = Convert.ToInt16(tb_szerokosc.Text);
             liczba_iglic = listBox.Items.Count;
             kontury = new double[listBox1.Items.Count];
-            Iglica[] iglice = new Iglica[4];
+            Iglica[] iglice = new Iglica[6];
             DxfDocument dxf = new DxfDocument();
             Triangulator.Geometry.Point pNew;
             iglice[0] = new Iglica(3, 3, 3);
-            iglice[1] = new Iglica(10, 7, 3);
-            iglice[2] = new Iglica(6, 12, 3);
-            iglice[3] = new Iglica(12, 15, 3);
-            for (int i = 0; i < 4; i++)
+            iglice[1] = new Iglica(15, 8, 3);
+            iglice[2] = new Iglica(0, 20, 3);
+            iglice[3] = new Iglica(20, 0, 3);
+            iglice[4] = new Iglica(0, 0, 0);
+            iglice[5] = new Iglica(20,20, 0);
+            for (int i = 0; i < iglice.Count(); i++)
             {
                 /*
                 iglice[i] = new Iglica();
@@ -83,7 +85,7 @@ namespace OdGrom
                     Vertices.Add(pNew);
 
             }
-            
+            /*
             for (int i=0; i<punkty_x;i=i+5)
             {
                 pNew = new Triangulator.Geometry.Point(0, i);
@@ -100,7 +102,7 @@ namespace OdGrom
                 Vertices.Add(pNew);
 
             }
-            
+            */
             for (int i = 0; i < listBox1.Items.Count; i++)
             {
                 kontury[i] = new double();
@@ -362,13 +364,32 @@ namespace OdGrom
         public void rysuj_troj(DxfDocument dxf, Iglica[] iglice)
         {
             int punkty_x, punkty_y, t_num=0;
+            netDxf.Tables.Layer warstwa_0_5 = new netDxf.Tables.Layer("h-0_5m");
+            warstwa_0_5.Color = new AciColor(255, 0, 0);
+            dxf.Layers.Add(warstwa_0_5);
+            netDxf.Tables.Layer warstwa = new netDxf.Tables.Layer("h-2_5m");
+            warstwa.Color = new AciColor(255, 0, 0);
+            dxf.Layers.Add(warstwa);
+            netDxf.Tables.Layer warstwa_2 = new netDxf.Tables.Layer("h-2_0m");
+            warstwa_2.Color = new AciColor(0, 255, 0);
+            dxf.Layers.Add(warstwa_2);
+            netDxf.Tables.Layer warstwa_3 = new netDxf.Tables.Layer("h-3_0m");
+            warstwa_3.Color = new AciColor(0, 0,255);
+            dxf.Layers.Add(warstwa_3);
+            netDxf.Tables.Layer warstwa_1_5 = new netDxf.Tables.Layer("h-1_5m");
+            warstwa_1_5.Color = new AciColor(0, 150, 255);
+            dxf.Layers.Add(warstwa_1_5);
+            netDxf.Tables.Layer warstwa_1 = new netDxf.Tables.Layer("h-1_0m");
+            warstwa_1.Color = new AciColor(150, 150, 0);
+            dxf.Layers.Add(warstwa_1);
             punkty_x = Convert.ToInt16(tb_dlugosc.Text) * Convert.ToInt16(1 / 0.01);
             punkty_y = Convert.ToInt16(tb_szerokosc.Text) * Convert.ToInt16(1 /0.01);
             double[] x = new double[punkty_x+1];
             double[] y = new double[punkty_y+1];
             double promien_tocz_kuli = 30;
-
-            double[,] siatka = new double[punkty_x+1, punkty_y+1];
+            double epsilon = 0.01;
+            double epsilon_2 = 0.01;
+            double[,] siatka = new double[punkty_x + 1, punkty_y+1];
             if (Vertices.Count > 2)
             {
                 //Do triangulation
@@ -382,8 +403,7 @@ namespace OdGrom
 
                     Vector3 pk_1 = new Vector3();
                     Vector3 pk_2 = new Vector3();
-                    Vector3 pk_3 = new Vector3();
-                    double epsilon = 0.01;
+                    Vector3 pk_3 = new Vector3();             
                     // g.DrawLine(myPen, (float)Vertices[t.p1].X, (float)Vertices[t.p1].Y, (float)Vertices[t.p2].X, (float)Vertices[t.p2].Y);
                     //  g.DrawLine(myPen, (float)Vertices[t.p2].X, (float)Vertices[t.p2].Y, (float)Vertices[t.p3].X, (float)Vertices[t.p3].Y);
                     // g.DrawLine(myPen, (float)Vertices[t.p1].X, (float)Vertices[t.p1].Y, (float)Vertices[t.p3].X, (float)Vertices[t.p3].Y);
@@ -456,13 +476,51 @@ namespace OdGrom
                             }
 
                         }
-                          //punkt_cad = new netDxf.Entities.Point();
-                          //dxf.AddEntity(punkt_cad);
+                        //punkt_cad = new netDxf.Entities.Point();
+                        //dxf.AddEntity(punkt_cad);
+                        if (((siatka[i, j] - 0.5) < epsilon_2) && (siatka[i, j] -0.5) > 0)
+                        {
+                            punkt_cad = new netDxf.Entities.Point(x[i], y[j], siatka[i, j]);
+                            punkt_cad.Layer = warstwa_0_5;
+                            dxf.AddEntity(punkt_cad);
+                        }
+                        if (((siatka[i, j] - 1) < epsilon_2) && (siatka[i, j] - 1) > 0)
+                        {
+                            punkt_cad = new netDxf.Entities.Point(x[i], y[j], siatka[i, j]);
+                            punkt_cad.Layer = warstwa_1;
+                            dxf.AddEntity(punkt_cad);
+                        }
+                        if (((siatka[i, j] - 1.5) < epsilon_2) && (siatka[i, j] - 1.5) > 0)
+                        {
+                            punkt_cad = new netDxf.Entities.Point(x[i], y[j], siatka[i, j]);
+                            punkt_cad.Layer = warstwa_1_5;
+                            dxf.AddEntity(punkt_cad);
+                        }
+                        if (((siatka[i, j] - 3) < epsilon_2) && (siatka[i, j] - 3) > 0)
+                        {
+                            punkt_cad = new netDxf.Entities.Point(x[i], y[j], siatka[i, j]);
+                            punkt_cad.Layer = warstwa_3;
+                            dxf.AddEntity(punkt_cad);
+                        }
+                        if (((siatka[i, j] - 2.5) < epsilon_2)&& (siatka[i, j] - 2.5) >0)
+                        {
+                            punkt_cad = new netDxf.Entities.Point(x[i],y[j], siatka[i, j]);
+                            punkt_cad.Layer = warstwa;
+                            dxf.AddEntity(punkt_cad);
+                        }
+                        if (((siatka[i, j] - 2) < epsilon_2) && (siatka[i, j] - 2) > 0)
+                        {
+                            punkt_cad = new netDxf.Entities.Point(x[i], y[j], siatka[i, j]);
+                            punkt_cad.Layer = warstwa_2;
+                            dxf.AddEntity(punkt_cad);
+                        }
 
-                      }
+
+                    }
                   }
-              
-                Contour(dxf, siatka, x, y, kontury);
+           
+                   // Contour(dxf, siatka, x, y, kontury);
+                
 
             }
         }
