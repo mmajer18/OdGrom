@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using netDxf;
 
-namespace OdGrom.Class
+namespace OdGrom
 {
     class Funkcje
     {
+
         public bool nalezy_do_trojkata(Vector3 pk1, Vector3 pk2, Vector3 pk3, Vector3 pk4)
         {
 
             return true;
         }
-
-        bool pointInPolygon(Vector3[] punkty, Vector3 pk)
+        public static bool pointInPolygon(Vector3[] punkty, Vector3 pk)
         {
             int i, j = 2;
             bool oddNodes = false;
@@ -30,6 +30,7 @@ namespace OdGrom.Class
                 }
                 j = i;
             }
+
 
             return oddNodes;
         }

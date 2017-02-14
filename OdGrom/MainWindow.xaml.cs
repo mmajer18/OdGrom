@@ -44,18 +44,23 @@ namespace OdGrom
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            
+            //test
             int liczba_iglic;
             int punkty_x, punkty_y;
             punkty_x = Convert.ToInt16(tb_dlugosc.Text);
             punkty_y = Convert.ToInt16(tb_szerokosc.Text);
             liczba_iglic = listBox.Items.Count;
             kontury = new double[listBox1.Items.Count];
-            Iglica[] iglice = new Iglica[liczba_iglic];
+            Iglica[] iglice = new Iglica[4];
             DxfDocument dxf = new DxfDocument();
             Triangulator.Geometry.Point pNew;
-            for (int i = 0; i < listBox.Items.Count; i++)
+            iglice[0] = new Iglica(3, 3, 3);
+            iglice[1] = new Iglica(10, 7, 3);
+            iglice[2] = new Iglica(6, 12, 3);
+            iglice[3] = new Iglica(12, 15, 3);
+            for (int i = 0; i < 4; i++)
             {
+                /*
                 iglice[i] = new Iglica();
                             
                     string linia = listBox.Items.GetItemAt(i).ToString();
@@ -70,14 +75,15 @@ namespace OdGrom
                     index0 = linia.IndexOf("h=");
                     index1 = linia.IndexOf(";");
                     iglice[i].wysokosc = Convert.ToDouble(linia.Substring(index0 + 2, index1 - index0 - 2));
-            
+            */
+
                 pNew = new Triangulator.Geometry.Point(iglice[i].X, iglice[i].Y);
                 if (!Vertices.Exists(delegate (Triangulator.Geometry.Point p) { return pNew.Equals2D(p); }))
                     Vertices.Add(pNew);
 
             }
-            /*
-            for (int i=0; i<punkty_x;i++)
+            
+            for (int i=0; i<punkty_x;i=i+5)
             {
                 pNew = new Triangulator.Geometry.Point(0, i);
                 Vertices.Add(pNew);
@@ -85,7 +91,7 @@ namespace OdGrom
                 Vertices.Add(pNew);
 
             }
-            for (int i = 0; i < punkty_y; i++)
+            for (int i = 0; i < punkty_y; i=i+5)
             {
                 pNew = new Triangulator.Geometry.Point(i, 0);
                 Vertices.Add(pNew);
@@ -93,7 +99,7 @@ namespace OdGrom
                 Vertices.Add(pNew);
 
             }
-            */
+            
             for (int i = 0; i < listBox1.Items.Count; i++)
             {
                 kontury[i] = new double();
@@ -185,7 +191,7 @@ namespace OdGrom
             max_x = Math.Max(Math.Max(pk_1.X, pk_2.X), pk_3.X);
             max_y = Math.Max(Math.Max(pk_1.Y, pk_2.Y), pk_3.Y);
             k = Convert.ToInt16(min_x * (1 / dok_pkt));
-            
+            /*
             for (double i = min_x; i<max_x; i += 0.01)
             {
                 x[k] = i;
@@ -198,7 +204,7 @@ namespace OdGrom
                     l = l + 1;
                 }
             }      
-                           
+                    */       
             
                
         }
@@ -454,20 +460,26 @@ namespace OdGrom
         }
         public void rysuj_troj(DxfDocument dxf, Iglica[] iglice)
         {
-            int punkty_x, punkty_y;
+            int punkty_x, punkty_y, t_num=0;
             punkty_x = Convert.ToInt16(tb_dlugosc.Text) * Convert.ToInt16(1 / 0.01);
             punkty_y = Convert.ToInt16(tb_szerokosc.Text) * Convert.ToInt16(1 /0.01);
             double[] x = new double[punkty_x+1];
             double[] y = new double[punkty_y+1];
+            double promien_tocz_kuli = 60;
+            netDxf.Entities.Point pt_9;
+
             double[,] siatka = new double[punkty_x+1, punkty_y+1];
             if (Vertices.Count > 2)
             {
                 //Do triangulation
                 List<Triangulator.Geometry.Triangle> tris = Triangulator.Delauney.Triangulate(Vertices);
                 // Draw the created triangles
-                punkty_x = tris.Count();
+
+                Vector3[,] punkty_troj = new Vector3[tris.Count, 3];
+                Vector3[,] wsp_kuli = new Vector3[tris.Count, 1];
                 foreach (Triangulator.Geometry.Triangle t in tris)
                 {
+              
                     Vector3 pk_1= new Vector3();
                     Vector3 pk_2 = new Vector3();
                     Vector3 pk_3 = new Vector3();
@@ -478,6 +490,9 @@ namespace OdGrom
                     pk_1 = new Vector3((float)Vertices[t.p1].X, (float)Vertices[t.p1].Y, 0);
                     pk_2 = new Vector3((float)Vertices[t.p2].X, (float)Vertices[t.p2].Y, 0);
                     pk_3 = new Vector3((float)Vertices[t.p3].X, (float)Vertices[t.p3].Y, 0);
+                    punkty_troj[t_num, 0] = pk_1;
+                    punkty_troj[t_num, 1] = pk_2;
+                    punkty_troj[t_num, 2] = pk_3;
                     for (int i = 0; i < listBox.Items.Count; i++)
                     {
                         if ((Math.Abs(Vertices[t.p1].X - iglice[i].X)<epsilon)  & (Math.Abs(Vertices[t.p1].Y - iglice[i].Y)<epsilon))
@@ -500,20 +515,47 @@ namespace OdGrom
                     pk_5.y = pk_1.Y;
                     pk_4 = pk_4.CircleCenter(pk_1, pk_2, pk_3);
                     Vector3 pk_6 = new Vector3();                    
-                    pk_6 = GetCen(pk_1, pk_2, pk_3);
+                    pk_6 = GetCen(pk_1, pk_2, pk_3); //srodek kuli
                     Vector2 pk_7 = new Vector2(pk_6.X, pk_6.Y);
                     netDxf.Entities.Line ln_1 = new netDxf.Entities.Line(pk_1, pk_2);
                     netDxf.Entities.Circle circle_1 = new netDxf.Entities.Circle(pk_6,Math.Sqrt(Math.Pow(pk_1.X-pk_6.X,2)+ Math.Pow(pk_1.Y - pk_6.Y, 2)+ Math.Pow(pk_1.Z - pk_6.Z, 2)));                    
                    // dxf.AddEntity(circle_1);
-                    //dxf.AddEntity(ln_1);                   
+                    dxf.AddEntity(ln_1);                   
                     ln_1 = new netDxf.Entities.Line(pk_2, pk_3);
-                    //dxf.AddEntity(ln_1);
+                    dxf.AddEntity(ln_1);
                     ln_1 = new netDxf.Entities.Line(pk_1, pk_3);
-                    //dxf.AddEntity(ln_1);
-                    wylicz_punkty_2(dxf, pk_1, pk_2, pk_3, pk_6, ref siatka, ref x, ref y);                
-
+                    dxf.AddEntity(ln_1);
+                    //wylicz_punkty_2(dxf, pk_1, pk_2, pk_3, pk_6, ref siatka, ref x, ref y); 
+                    double radius = Math.Sqrt(Math.Pow(pk_1.X - pk_6.X, 2) + Math.Pow(pk_1.Y - pk_6.Y, 2) + Math.Pow(pk_1.Z - pk_6.Z, 2));
+                    double z_kuli = pk_6.Z + Math.Sqrt(Math.Pow(promien_tocz_kuli, 2) - Math.Pow(radius, 2));
+                    wsp_kuli[t_num, 0] = new Vector3(pk_6.X, pk_6.Y, z_kuli);    
+                    t_num = t_num + 1;
                 }
+                for (int i =0; i<20/0.01; i++)
+                {
+                    x[i] = i * 0.01;
+                    for (int j=0; j<20/0.01;j++)
+                    {
 
+                        y[j] = j * 0.01;
+
+                        for (int k=0; k<t_num; k++)
+                        {
+                            Vector3[] pk_rob = new Vector3[3];
+                            Vector3 pk = new Vector3(i*0.01,j*0.01,0);
+                            pk_rob[0] = punkty_troj[k,0];
+                            pk_rob[1] = punkty_troj[k, 1];
+                            pk_rob[2] = punkty_troj[k, 2];
+                            if (Funkcje.pointInPolygon(pk_rob,pk))
+                            {
+                                siatka[i, j] = wsp_kuli[k,0].Z - Math.Sqrt(Math.Pow(promien_tocz_kuli, 2) - Math.Pow(i, 2) + 2 * i * wsp_kuli[k,0].X - Math.Pow(wsp_kuli[k,0].X, 2) - Math.Pow(j, 2) + 2 * j * wsp_kuli[k,0].Y - Math.Pow(wsp_kuli[k,0].Y, 2));
+                                pt_9 = new netDxf.Entities.Point(x[i], y[j], siatka[i, j]);
+                                //dxf.AddEntity(pt_9);    
+                            }
+                           
+                        }
+                    }
+                }
                 Contour(dxf, siatka, x, y, kontury);
 
             }
